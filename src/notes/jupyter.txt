@@ -1,0 +1,7 @@
+jupyter
+Que es: is an open-source tool that lest you write and run code in the samee place where you also write text, explanations, images and results.
+
+
+the interface is so simple you only need in your CMD execute once "pip install notebook" afther that you run notebook with "jupyter notebook" that will make it open a windows in your browser with your notebook.
+
+1. to create a new notebook, check in the top of page and select "file" then select new and new notebook with these you've created a new file that promaming in python lenguaje
