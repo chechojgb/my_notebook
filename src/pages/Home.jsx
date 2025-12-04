@@ -23,8 +23,10 @@ import {
   Cpu,
   Layers
 } from 'lucide-react';
+import StatCard from '../components/common/StatCard';
+import CategoryCard from '../components/common/CategoryCard';
 
-const Welcome = () => {
+const Home = () => {
   const [quickNote, setQuickNote] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -186,21 +188,14 @@ const Welcome = () => {
         {/* Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => (
-            <div key={index} className={`${stat.color} border rounded-xl p-5 hover:shadow-md transition-shadow`}>
-              <div className="flex items-center justify-between mb-3">
-                <div className={`p-2.5 rounded-lg ${stat.icon.type === FileText ? 'bg-blue-100 text-blue-600' : 
-                  stat.icon.type === Folder ? 'bg-green-100 text-green-600' :
-                  stat.icon.type === Star ? 'bg-yellow-100 text-yellow-600' :
-                  'bg-purple-100 text-purple-600'}`}>
-                  {stat.icon}
-                </div>
-                <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
-                  {stat.change}
-                </span>
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
-            </div>
+            <StatCard
+            key={index}
+            color={stat.color}
+            icon={stat.icon}
+            change={stat.change}
+            value={stat.value}
+            label={stat.label}
+            />
           ))}
         </div>
 
@@ -320,21 +315,13 @@ const Welcome = () => {
               
               <div className="space-y-3">
                 {knowledgeCategories.map(category => (
-                  <div 
-                    key={category.id} 
-                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2.5 rounded-lg ${category.color}`}>
-                        {category.icon}
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900">{category.name}</div>
-                        <div className="text-sm text-gray-500">{category.count} notas</div>
-                      </div>
-                    </div>
-                    <ChevronRight className="text-gray-400 group-hover:text-blue-500 transition" size={20} />
-                  </div>
+                  <CategoryCard
+                  key={category.id}
+                  color={category.color}
+                  icon={category.icon}
+                  name={category.name}
+                  count={category.count}
+                  />
                 ))}
               </div>
               
@@ -457,4 +444,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default Home;
