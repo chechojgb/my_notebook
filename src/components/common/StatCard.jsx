@@ -1,6 +1,6 @@
 import React from "react";
 
-const StatCard = ({color, icon, change, value, label, key}) => {
+const StatCard = ({color, icon, change, value, label, id}) => {
     const IconBgClass = () =>{
         if (icon.type.name === 'FileText') return "bg-blue-100 text-blue-600"
         if (icon.type.name === 'Folder') return "bg-green-100 text-green-600"
@@ -9,7 +9,7 @@ const StatCard = ({color, icon, change, value, label, key}) => {
     }
 
     return (
-        <div key={key} className={`${color} border rounded-xl p-5 hover:shadow-md transition-shadow`} >
+        <div key={id} className={`${color} border rounded-xl p-5 hover:shadow-md transition-shadow`} >
             <div className="flex items-center justify-between mb-3">
                 <div className={`p-2.5 rounded-lg ${IconBgClass}`}>
                     {icon}
