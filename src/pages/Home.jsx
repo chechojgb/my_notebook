@@ -7,7 +7,6 @@ import {
   Clock,
   Plus,
   BookOpen,
-  Calendar,
   Edit,
   Bell,
   ChevronRight,
@@ -25,6 +24,11 @@ import {
 } from 'lucide-react';
 import StatCard from '../components/common/StatCard';
 import CategoryCard from '../components/common/CategoryCard';
+import ReminderItem from '../components/common/ReminderItem';
+import TagsCard from '../components/common/TagsCard';
+import ButtonTags from '../components/common/ButtonTags';
+import ButtonAdd from '../components/common/ButtonAdd';
+import ShortCut from '../components/common/ShortCut';
 
 const Home = () => {
   const [quickNote, setQuickNote] = useState('');
@@ -157,31 +161,26 @@ const Home = () => {
                 />
               </div>
               
-              <button className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2 transition">
+              <ButtonAdd text="Nueva" color="purple">
                 <Plus size={20} />
-                Nueva
-              </button>
+              </ButtonAdd>
             </div>
           </div>
 
           {/* Acciones rápidas */}
           <div className="flex flex-wrap gap-3 mb-6">
-            <button className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition font-medium">
+            <ButtonTags text="Nueva nota" >
               <Plus size={20} />
-              Nueva nota
-            </button>
-            <button className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg flex items-center gap-2 transition font-medium">
+            </ButtonTags>
+            <ButtonTags text="Nueva categoría">
               <Folder size={20} />
-              Nueva categoría
-            </button>
-            <button className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg flex items-center gap-2 transition font-medium">
+            </ButtonTags>
+            <ButtonTags text="Agregar tags">
               <Tag size={20} />
-              Agregar tags
-            </button>
-            <button className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg flex items-center gap-2 transition font-medium">
+            </ButtonTags>
+            <ButtonTags text="Recordatorio">
               <Bell size={20} />
-              Recordatorio
-            </button>
+            </ButtonTags>
           </div>
         </header>
 
@@ -189,7 +188,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => (
             <StatCard
-            key={index}
+            id={index}
             color={stat.color}
             icon={stat.icon}
             change={stat.change}
@@ -316,7 +315,7 @@ const Home = () => {
               <div className="space-y-3">
                 {knowledgeCategories.map(category => (
                   <CategoryCard
-                  key={category.id}
+                  id={category.id}
                   color={category.color}
                   icon={category.icon}
                   name={category.name}
@@ -345,22 +344,13 @@ const Home = () => {
               
               <div className="space-y-3">
                 {studyReminders.map(reminder => (
-                  <div key={reminder.id} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <Calendar className="text-blue-600" size={18} />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-gray-900 truncate">{reminder.text}</div>
-                      <div className="text-sm text-gray-500 flex items-center gap-1">
-                        <Clock size={12} />
-                        {reminder.time}
-                      </div>
-                    </div>
-                    <div className={`w-3 h-3 rounded-full ${reminder.priority === 'high' ? 'bg-red-500' : 
-                      reminder.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
-                  </div>
+                  <ReminderItem
+                  id={reminder.id}
+                  text={reminder.text}
+                  time={reminder.time}
+                  priority={reminder.priority}
+                  />
+
                 ))}
               </div>
               
@@ -386,17 +376,8 @@ const Home = () => {
               
               <div className="flex flex-wrap gap-2">
                 {popularTags.map(tag => (
-                  <div 
-                    key={tag.name}
-                    className="group relative"
-                  >
-                    <button className="px-3 py-2 bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-lg transition flex items-center gap-1.5">
-                      <Hash size={14} />
-                      <span className="font-medium">{tag.name}</span>
-                      <span className="text-xs text-gray-500">({tag.count})</span>
-                    </button>
-                  </div>
-                ))}
+                  <TagsCard id={tag.name} name={tag.name} count={tag.count}/>
+                ))} 
               </div>
               
               <div className="mt-4 pt-4 border-t border-gray-200">
@@ -419,22 +400,10 @@ const Home = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-3">
-                <button className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition flex flex-col items-center justify-center gap-2">
-                  <Star size={20} />
-                  <span className="text-sm font-medium">Favoritas</span>
-                </button>
-                <button className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition flex flex-col items-center justify-center gap-2">
-                  <TrendingUp size={20} />
-                  <span className="text-sm font-medium">Tendencia</span>
-                </button>
-                <button className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition flex flex-col items-center justify-center gap-2">
-                  <FileText size={20} />
-                  <span className="text-sm font-medium">Sin leer</span>
-                </button>
-                <button className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-lg transition flex flex-col items-center justify-center gap-2">
-                  <BookOpen size={20} />
-                  <span className="text-sm font-medium">Tutoriales</span>
-                </button>
+                <ShortCut text="Favoritas"><Star size={20} /></ShortCut>
+                <ShortCut text="Tendencia"><TrendingUp size={20} /></ShortCut>
+                <ShortCut text="Sin leer"><FileText size={20} /></ShortCut>
+                <ShortCut text="Tutoriales"><BookOpen size={20} /></ShortCut>
               </div>
             </div>
           </div>

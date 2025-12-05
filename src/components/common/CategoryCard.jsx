@@ -1,9 +1,9 @@
 import React from "react";
 import { ChevronRight,} from 'lucide-react';
 
-const CategoryCard = ({key, color, icon, name, count}) => {
+const CategoryCard = ({id, color, icon, name, count}) => {
     return(
-        <div key={key} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition cursor-pointer group"
+        <div key={id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition cursor-pointer group"
         >
             <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-lg ${color}`}>
