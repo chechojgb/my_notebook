@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   Search, 
   FileText, 
@@ -10,16 +10,9 @@ import {
   Edit,
   Bell,
   ChevronRight,
-  Code,
-  Database,
-  Globe,
-  Terminal,
-  BookMarked,
   Zap,
   Star,
   TrendingUp,
-  Hash,
-  Cpu,
   Layers
 } from 'lucide-react';
 import StatCard from '../components/common/StatCard';
@@ -29,93 +22,17 @@ import TagsCard from '../components/common/TagsCard';
 import ButtonTags from '../components/common/ButtonTags';
 import ButtonAdd from '../components/common/ButtonAdd';
 import ShortCut from '../components/common/ShortCut';
+import RecentKnowledge from '../components/welcome/recentKnowledge';
+import { KNOWLEDGE_CATEGORIES } from '../data/mockKnowledge';
+import { RECENT_NOTES } from '../data/mosckRecentNotes';
+import { STUDY_REMINDERS } from '../data/mockStudyReminders';
+import { STATS } from '../data/mockStats';
+import { POPULAR_TAGS } from '../data/mockPopularTags';
 
 const Home = () => {
   const [quickNote, setQuickNote] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Categorías de conocimiento
-  const knowledgeCategories = [
-    { id: 1, name: 'React', icon: <Code size={20} />, count: 15, color: 'bg-blue-100 text-blue-600' },
-    { id: 2, name: 'JavaScript', icon: <FileText size={20} />, count: 22, color: 'bg-yellow-100 text-yellow-600' },
-    { id: 3, name: 'TypeScript', icon: <Cpu size={20} />, count: 12, color: 'bg-blue-100 text-blue-600' },
-    { id: 4, name: 'Node.js', icon: <Terminal size={20} />, count: 8, color: 'bg-green-100 text-green-600' },
-    { id: 5, name: 'Bases de Datos', icon: <Database size={20} />, count: 10, color: 'bg-purple-100 text-purple-600' },
-    { id: 6, name: 'Next.js', icon: <Globe size={20} />, count: 7, color: 'bg-gray-100 text-gray-600' },
-  ];
-
-  // Notas recientes
-  const recentNotes = [
-    { 
-      id: 1, 
-      title: 'React Hooks Avanzados: useMemo y useCallback', 
-      category: 'React',
-      excerpt: 'Profundizando en optimización de rendimiento con hooks avanzados, casos de uso prácticos y ejemplos reales de aplicación.',
-      date: 'Hoy, 10:30',
-      tags: ['react', 'hooks', 'performance', 'optimization'],
-      favorite: true,
-      priority: 'high'
-    },
-    { 
-      id: 2, 
-      title: 'TypeScript Generics y Utility Types', 
-      category: 'TypeScript',
-      excerpt: 'Explorando patrones avanzados con generics, conditional types y utility types como Pick, Omit, Partial y Required.',
-      date: 'Ayer, 16:45',
-      tags: ['typescript', 'generics', 'typing', 'advanced'],
-      favorite: true,
-      priority: 'medium'
-    },
-    { 
-      id: 3, 
-      title: 'Optimización de Queries SQL: Índices y Explain', 
-      category: 'Bases de Datos',
-      excerpt: 'Guía completa sobre creación de índices compuestos, uso de EXPLAIN ANALYZE y técnicas de normalización avanzada.',
-      date: '15 Ene, 14:20',
-      tags: ['sql', 'performance', 'indexes', 'database'],
-      favorite: false,
-      priority: 'high'
-    },
-    { 
-      id: 4, 
-      title: 'Server Components en Next.js 14', 
-      category: 'Next.js',
-      excerpt: 'Implementación de Server Components, streaming, y mejores prácticas para aplicaciones modernas de React.',
-      date: '14 Ene, 11:10',
-      tags: ['nextjs', 'react', 'server-components', 'ssr'],
-      favorite: false,
-      priority: 'medium'
-    },
-  ];
-
-  // Recordatorios de estudio
-  const studyReminders = [
-    { id: 1, text: 'Completar tutorial de WebSockets y Socket.io', time: 'Hoy 16:00', priority: 'high' },
-    { id: 2, text: 'Revisar Pull Request #45 en proyecto personal', time: 'Mañana 10:00', priority: 'medium' },
-    { id: 3, text: 'Estudiar patrones de diseño: Observer y Pub/Sub', time: 'Esta semana', priority: 'low' },
-    { id: 4, text: 'Actualizar documentación de API endpoints', time: 'Próximos días', priority: 'medium' },
-  ];
-
-  // Estadísticas
-  const stats = [
-    { label: 'Total notas', value: '86', icon: <FileText size={20} />, change: '+12%', color: 'bg-blue-50 border-blue-200' },
-    { label: 'Categorías activas', value: '8', icon: <Folder size={20} />, change: '+2', color: 'bg-green-50 border-green-200' },
-    { label: 'Notas favoritas', value: '24', icon: <Star size={20} />, change: '+5', color: 'bg-yellow-50 border-yellow-200' },
-    { label: 'Actividad semanal', value: '18/día', icon: <TrendingUp size={20} />, change: '+8%', color: 'bg-purple-50 border-purple-200' },
-  ];
-
-  // Tags populares
-  const popularTags = [
-    { name: 'react', count: 42 },
-    { name: 'javascript', count: 38 },
-    { name: 'typescript', count: 25 },
-    { name: 'nodejs', count: 18 },
-    { name: 'sql', count: 15 },
-    { name: 'performance', count: 12 },
-    { name: 'hooks', count: 10 },
-    { name: 'nextjs', count: 9 },
-  ];
-
+  
   const handleSaveNote = () => {
     if (quickNote.trim()) {
       console.log('Nota guardada:', quickNote);
@@ -124,14 +41,16 @@ const Home = () => {
     }
   };
 
-  const getPriorityBadge = (priority) => {
-    const styles = {
-      high: 'bg-red-100 text-red-800 border-red-200',
-      medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      low: 'bg-green-100 text-green-800 border-green-200'
-    };
-    return styles[priority] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+  // Categorías de conocimiento
+  const knowledgeCategories = KNOWLEDGE_CATEGORIES;
+  // Notas recientes
+  const recentNotes = RECENT_NOTES;
+  // Recordatorios de estudio
+  const studyReminders = STUDY_REMINDERS;
+  // Estadísticas
+  const stats = STATS;
+  // Tags populares
+  const popularTags = POPULAR_TAGS;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -187,14 +106,7 @@ const Home = () => {
         {/* Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => (
-            <StatCard
-            id={index}
-            color={stat.color}
-            icon={stat.icon}
-            change={stat.change}
-            value={stat.value}
-            label={stat.label}
-            />
+            <StatCard id={index} color={stat.color} icon={stat.icon} change={stat.change} value={stat.value} label={stat.label} />
           ))}
         </div>
 
@@ -258,41 +170,8 @@ const Home = () => {
               
               <div className="space-y-4">
                 {recentNotes.map(note => (
-                  <div key={note.id} className="group p-5 border border-gray-200 hover:border-blue-300 rounded-xl transition-all cursor-pointer hover:shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${note.category === 'React' ? 'bg-blue-100 text-blue-800' :
-                            note.category === 'TypeScript' ? 'bg-blue-100 text-blue-800' :
-                            note.category === 'Next.js' ? 'bg-gray-100 text-gray-800' :
-                            'bg-purple-100 text-purple-800'}`}>
-                            {note.category}
-                          </span>
-                          <span className={`px-2 py-1 text-xs font-medium rounded border ${getPriorityBadge(note.priority)}`}>
-                            {note.priority === 'high' ? 'Alta prioridad' : note.priority === 'medium' ? 'Media prioridad' : 'Baja prioridad'}
-                          </span>
-                          <span className="text-sm text-gray-500">{note.date}</span>
-                          {note.favorite && (
-                            <Star className="text-yellow-500" size={16} fill="currentColor" />
-                          )}
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition">
-                          {note.title}
-                        </h3>
-                        <p className="text-gray-600 mb-3 line-clamp-2">{note.excerpt}</p>
-                      </div>
-                      <BookMarked className="text-gray-400 group-hover:text-blue-500 transition mt-1" size={20} />
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {note.tags.map(tag => (
-                        <span key={tag} className="px-2.5 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg flex items-center gap-1">
-                          <Hash size={10} />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                    <RecentKnowledge id={note.id} category={note.category} priority={note.priority} date={note.priority} favorite={note.favorite} title={note.title} excerpt={note.excerpt} tags={note.tags}  />
+
                 ))}
               </div>
             </div>
@@ -314,13 +193,7 @@ const Home = () => {
               
               <div className="space-y-3">
                 {knowledgeCategories.map(category => (
-                  <CategoryCard
-                  id={category.id}
-                  color={category.color}
-                  icon={category.icon}
-                  name={category.name}
-                  count={category.count}
-                  />
+                  <CategoryCard id={category.id} color={category.color} icon={category.icon} name={category.name} count={category.count} />
                 ))}
               </div>
               
@@ -344,12 +217,7 @@ const Home = () => {
               
               <div className="space-y-3">
                 {studyReminders.map(reminder => (
-                  <ReminderItem
-                  id={reminder.id}
-                  text={reminder.text}
-                  time={reminder.time}
-                  priority={reminder.priority}
-                  />
+                  <ReminderItem id={reminder.id} text={reminder.text} time={reminder.time} priority={reminder.priority} />
 
                 ))}
               </div>
