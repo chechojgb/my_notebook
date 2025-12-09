@@ -3,6 +3,7 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Welcome from './pages/Welcome'
+import Layout from './components/layout/Layout'
 
 
 function App() {
@@ -10,10 +11,13 @@ function App() {
 
   return (
     <Router>
-        <Routes>
+        <Layout>
+          <Routes>
           <Route path="/" element={<Welcome />} />
-          <Route path="/dashboard" element={<Home />} />
-        </Routes>
+
+            <Route path="/dashboard" element={<Home />} />
+          </Routes>
+        </Layout>
     </Router>
   )
 }
